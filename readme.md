@@ -1,3 +1,3 @@
 # Run
-yarn
-yarn cucumber-js
+- yarn
+- yarn cucumber-js

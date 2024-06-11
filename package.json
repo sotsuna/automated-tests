@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "@cucumber/cucumber": "^10.8.0",
-    "playwright": "^1.44.1"
+    "playwright": "^1.44.1",
+    "typescript": "^5.4.5"
   },
   "devDependencies": {
     "@playwright/test": "^1.44.1",

@@ -1,4 +1,7 @@
 # Run
+
+## Simple boilerplate for automated web testing
+
 install project dependencies
 - yarn install
 

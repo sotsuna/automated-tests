@@ -1,3 +1,5 @@
 # Run
-- yarn
+install project dependencies
+- yarn install
+run tests using cucumber
 - yarn cucumber-js

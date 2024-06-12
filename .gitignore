@@ -4,3 +4,4 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /bdd-tests/reports/
+bdd-tests/reports/cucumber-report.html

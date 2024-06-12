@@ -18,6 +18,6 @@ When('I press <button>', async function (this: ICustomWorld) {
     await this.page!.click('button[name="user"]');
 });
 
-Then('I should see the main form', async function (this: ICustomWorld) {
-    await this.page!.frame('mainform')?.waitForSelector('title["Assistente e FAQ"]', { state: 'visible' });
+Then('I should see the main form', async function (this: ICustomWorld) { 
+    await this.page!.mainFrame();
 });

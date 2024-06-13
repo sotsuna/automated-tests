@@ -4,11 +4,7 @@ The Steps and Features folders are inside the bdd-test folder, you can change th
 
 # Run the project
 
-## Install Yarn
-
 - npm install yarn -d
-
-## 
 
 install project dependencies
 - yarn

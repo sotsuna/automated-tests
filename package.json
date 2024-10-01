@@ -1,6 +1,20 @@
 {
+  "name": "playwright-cucumber-ts",
+  "version": "1.0.0",
+  "description": "Playwright with Cucumber and TypeScript",
+  "main": "cucumber.mjs",
+  "scripts": {
+    "test": "cucumber-js"
+  },
+  "keywords": [
+    "playwright",
+    "cucumber",
+    "typescript"
+  ],
+  "author": "Marco Kist & William Bernst",
+  "license": "MIT",
   "dependencies": {
-    "@cucumber/cucumber": "^10.8.0",
+    "@cucumber/cucumber": "^11.0.1",
     "playwright": "^1.44.1",
     "typescript": "^5.4.5"
   },
@@ -8,6 +22,6 @@
     "@playwright/test": "^1.44.1",
     "@types/node": "^20.14.2",
     "ts-node": "^10.9.2"
-  },
-  "scripts": {}
+  }
 }
+

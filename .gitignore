@@ -5,3 +5,4 @@ node_modules/
 /playwright/.cache/
 /bdd-tests/reports/
 bdd-tests/reports/cucumber-report.html
+.env

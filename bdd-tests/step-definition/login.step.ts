@@ -1,23 +1,27 @@
 import { Given, When, Then } from '@cucumber/cucumber';
 import { ICustomWorld } from '../support/custom-world';
+require('dotenv').config();
 
+const MK_USER = process.env.MK_USER;
+const MK_PASSWORD = process.env.MK_PASSWORD;
+const MK_ENV = process.env.MK_ENV;
 
-Given('I am on the login page', async function (this: ICustomWorld) {
-    await this.page!.goto('http://172.0.0.234:8313/mk/login/?sys=MK0');
+Given('I am on the login page', {timeout: 60000},async function (this: ICustomWorld) {
+    await this.page!.goto(`${MK_ENV}`);
 });
 
-Given('I fill in the username field with <string>', async function (this: ICustomWorld) {
-    await this.page!.fill('input[name="user"]', 'marco.kist');
+Given('I fill in the username field with <string>', {timeout: 60000}, async function (this: ICustomWorld) {
+    await this.page!.fill('input[name="user"]', `${MK_USER}`);
 });
 
-Given('I fill in the password field with <string>', async function (this: ICustomWorld) {
-    await this.page!.fill('input[name="password"]', 'Mart0123!');
+Given('I fill in the password field with <string>', {timeout: 60000}, async function (this: ICustomWorld) {
+    await this.page!.fill('input[name="password"]', `${MK_PASSWORD}`);
 });
 
-When('I press <button>', async function (this: ICustomWorld) {
+When('I press <button>', {timeout: 60000}, async function (this: ICustomWorld) {
     await this.page!.click('button[name="user"]');
 });
 
-Then('I should see the main form', async function (this: ICustomWorld) { 
+Then('I should see the main form', {timeout: 60000}, async function (this: ICustomWorld) { 
     await this.page!.mainFrame();
 });

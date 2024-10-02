@@ -9,12 +9,13 @@ declare global {
 BeforeAll(async function () {
     global.browser = await chromium.launch({
         headless: false,
+        slowMo: 1000,
     });
 });
 
-AfterAll(async function () {
-    await global.browser.close();
-});
+// AfterAll(async function () {
+//     await global.browser.close();
+// });
 
 Before(async function (this: ICustomWorld) {
     this.context = await global.browser.newContext();
@@ -22,6 +23,5 @@ Before(async function (this: ICustomWorld) {
 });
 
 After(async function (this: ICustomWorld) {
-    await this.page?.close();
-    await this.context?.close();
+    await this.page?.screenshot({ path: `screenshot-${Date.now()}.png` });
 });

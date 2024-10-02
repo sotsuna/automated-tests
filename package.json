@@ -2,9 +2,9 @@
   "name": "playwright-cucumber-ts",
   "version": "1.0.0",
   "description": "Playwright with Cucumber and TypeScript",
-  "main": "cucumber.mjs",
+  "main": "index.js",
   "scripts": {
-    "test": "cucumber-js"
+    "test": "cucumber-js test"
   },
   "keywords": [
     "playwright",
@@ -15,6 +15,7 @@
   "license": "MIT",
   "dependencies": {
     "@cucumber/cucumber": "^11.0.1",
+    "dotenv": "^16.4.5",
     "playwright": "^1.44.1",
     "typescript": "^5.4.5"
   },
@@ -24,4 +25,3 @@
     "ts-node": "^10.9.2"
   }
 }
-

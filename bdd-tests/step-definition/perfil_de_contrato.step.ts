@@ -1,60 +1,84 @@
-import { Given } from '@cucumber/cucumber';
-import { ICustomWorld } from '../support/custom-world';
+import { Given } from "@cucumber/cucumber";
+import { ICustomWorld } from "../support/custom-world";
 
 const MK_USER = process.env.MK_USER;
 const MK_PASSWORD = process.env.MK_PASSWORD;
 const MK_ENV = process.env.MK_ENV;
 
-const mainFrameUrl = "open.do?sys=MK0";
+Given(
+  "que eu estou logado no sistema",
+  { timeout: 60000 },
+  async function (this: ICustomWorld) {
+    // Acessa a página do sistema com a URL do ambiente
+    await this.page!.goto(`${MK_ENV}`);
 
-// Função reutilizável para procurar frames, pode ser movida para outro arquivo no futuro
-async function procurarFrames(this: ICustomWorld, urlFrameRequisitado: string) {
-  const frames = await this.page!.frames();
-  const frame = frames.find(f => f.url().includes(urlFrameRequisitado));
-  if (!frame) {
-    throw new Error(`Frame com URL '${urlFrameRequisitado}' não encontrado`);
+    // Preenche os campos de usuário e senha
+    await this.page!.fill('input[name="user"]', `${MK_USER}`);
+    await this.page!.fill('input[name="password"]', `${MK_PASSWORD}`);
+
+    // Clica no botão de login
+    await this.page!.click('button[name="user"]');
   }
-  return frame;
-}
+);
 
-Given('que eu estou logado no sistema', async function (this: ICustomWorld) {
-  // Acessa a página do sistema com a URL do ambiente
-  await this.page!.goto(`${MK_ENV}`);
-  
-  // Preenche os campos de usuário e senha
-  await this.page!.fill('input[name="user"]', `${MK_USER}`);
-  await this.page!.fill('input[name="password"]', `${MK_PASSWORD}`);
-  
-  // Clica no botão de login
-  await this.page!.click('button[name="user"]');
-});
-
-Given('estou na tela inicial do sistema', async function (this: ICustomWorld) {
+Given("estou na tela inicial do sistema", async function (this: ICustomWorld) {
   // Aguarda o carregamento dos frames na página
-  await this.page!.waitForSelector('frameset');
-  await this.page!.waitForLoadState('domcontentloaded');
+  await this.page!.waitForSelector("frameset");
+  await this.page!.waitForLoadState("domcontentloaded");
 });
 
-Given('eu clico na moeda de configuração', { timeout: 60000 }, async function (this: ICustomWorld) {
-  try {
-    await this.page!.waitForLoadState('load');
-    // Procura o frame principal da aplicação com a URL especificada
-    const mainFrame = await procurarFrames.call(this, mainFrameUrl);
-    
-    // Loga o frame encontrado para verificação
-    console.log(mainFrame);
-    
-    // Exemplo de ação dentro do frame: clique em um botão de configuração
-    const mainSystem = mainFrame?.frameLocator('mainsystem');
-    const mainForm = mainSystem?.frameLocator('mainform');
-    const configButton = mainForm?.getByTitle('Configurações');
-    if (configButton) {
-      console.log('cliclado papai')
-      await configButton.click();
-    } else {
-      throw new Error('Botão de configuração não encontrado');
+Given(
+  "eu clico na moeda de configuração",
+  { timeout: 30000 },
+  async function (this: ICustomWorld) {
+    await this.page!.waitForSelector("frameset");
+    await this.page!.waitForLoadState("domcontentloaded");
+    await this.page!.waitForLoadState("load");
+    try {
+      const frames = this.page!.frames();
+      const mainFrame = frames.find((frame) =>
+        frame.name().includes("mainsystem")
+      );
+      const mainForm = mainFrame?.frameLocator('iframe[name="mainform"]');
+      try {
+        await mainForm?.getByTitle("Financeiro").click();
+      } catch (error) {
+        console.log("Erro ao clicar na moeda de configuração: ", error);
+      }
+    } catch (error: any) {
+      console.error(
+        `Erro ao clicar na moeda de configuração: ${error.message}`
+      );
     }
-  } catch (error: any) {
-    console.error(`Erro ao clicar na moeda de configuração: ${error.message}`);
   }
-});
+);
+
+Given(
+  "eu clico na aba de perfis de contrato",
+  { timeout: 30000 },
+  async function (this: ICustomWorld) {
+    await this.page!.waitForLoadState('domcontentloaded');
+    try {
+      const frames = this.page!.frames();
+      const mainFrame = frames.find((frame) =>
+        frame.name().includes("mainsystem")
+      );
+      const mainForm = mainFrame?.frameLocator('iframe[name="mainform"]');
+      const mainForm2 = mainForm?.frameLocator('iframe[id="URLFrame6802985"]');
+      const mainForm3 = mainForm2?.frameLocator('iframe[name="mainform"]');
+      try {
+        if (mainForm3) {
+          await mainForm3?.locator('a[title="Gerenciador de Contas a Pagar"]').click();
+        } else {
+          console.log("Erro ao clicar na aba de perfis de contrato");
+        }
+      } catch (error) {
+        console.log("Erro ao clicar na moeda de configuração: ", error);
+      }
+    } catch (error: any) {
+      console.error(
+        `Erro ao clicar na moeda de configuração: ${error.message}`
+      );
+    }
+  }
+);

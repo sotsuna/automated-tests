@@ -1,6 +1,7 @@
 import { Before, After, BeforeAll, AfterAll } from '@cucumber/cucumber';
 import { chromium, ChromiumBrowser } from '@playwright/test';
 import { ICustomWorld } from './custom-world';
+require ('dotenv').config();
 
 declare global {
     var browser: ChromiumBrowser;
@@ -9,7 +10,13 @@ declare global {
 BeforeAll(async function () {
     global.browser = await chromium.launch({
         headless: false,
-        slowMo: 1000,
+        slowMo: 2000,
+        devtools: true, 
+        logger: {
+            isEnabled: (name, severity) => name === 'browser',
+            log: (name, severity, message) => console.log(`[${name}] ${message}`)
+        },
+        args: ["--start-maximized"]
     });
 });
 
@@ -20,8 +27,9 @@ BeforeAll(async function () {
 Before(async function (this: ICustomWorld) {
     this.context = await global.browser.newContext();
     this.page = await this.context?.newPage();
+    this.page.goto(`${process.env.MK_ENV}`);
 });
 
 After(async function (this: ICustomWorld) {
-    await this.page?.screenshot({ path: `screenshot-${Date.now()}.png` });
+    await this.page?.screenshot({ path: `screenshots/screenshot-${Date.now()}.png` });
 });

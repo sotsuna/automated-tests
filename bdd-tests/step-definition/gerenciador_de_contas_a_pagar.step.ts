@@ -3,15 +3,12 @@ import { ICustomWorld } from "../support/custom-world";
 
 const MK_USER = process.env.MK_USER;
 const MK_PASSWORD = process.env.MK_PASSWORD;
-const MK_ENV = process.env.MK_ENV;
 
-// Função auxiliar para esperar por frames e carregamento da página
 async function waitForFramesAndLoad(page: any) {
   await page.waitForSelector("frameset");
   await page.waitForLoadState("domcontentloaded");
 }
 
-// Função auxiliar para obter o frame principal
 function getMainFrame(page: any) {
   const frames = page.frames();
   return frames.find((frame: any) => frame.name().includes("mainsystem"));
@@ -21,7 +18,6 @@ Given(
   "que eu estou logado no sistema",
   { timeout: 60000 },
   async function (this: ICustomWorld) {
-    await this.page!.goto(`${MK_ENV}`);
     await this.page!.fill('input[name="user"]', `${MK_USER}`);
     await this.page!.fill('input[name="password"]', `${MK_PASSWORD}`);
     await this.page!.click('button[name="user"]');
@@ -33,7 +29,7 @@ Given("estou na tela inicial do sistema", async function (this: ICustomWorld) {
 });
 
 Given(
-  "eu clico na moeda de configuração",
+  "eu clico na moeda do Financeiro",
   { timeout: 30000 },
   async function (this: ICustomWorld) {
     await waitForFramesAndLoad(this.page);
@@ -52,18 +48,22 @@ Given(
 );
 
 Given(
-  "eu clico na aba de perfis de contrato",
+  "eu clico na aba no menu do Gerenciador de Contas a Pagar",
   { timeout: 30000 },
   async function (this: ICustomWorld) {
     await waitForFramesAndLoad(this.page);
     const mainFrame = getMainFrame(this.page);
     if (mainFrame) {
       try {
-        const mainForm = mainFrame.content();
-        console.log(mainForm); // Este log parece ser temporário, pode ser removido se não for necessário
-        // Código adicional para interação com o mainForm aqui, se necessário
+        const frameLayer1 = mainFrame.frameLocator('iframe[name="mainform"]');
+        console.log('\n Mainform: \n', frameLayer1);
+        const frameLayer2 = frameLayer1.frameLocator('iframe[id="URLFrame6170976"]');
+        console.log('\n URLFrame6170976: \n', frameLayer2);
+        const frameLayer3 = frameLayer2.frameLocator('iframe[name="mainform"]');
+        console.log('\n Mainform 2: \n', frameLayer3);
+        // await frameLayer3?.locator('a').click();
       } catch (error) {
-        console.error("Erro ao clicar na aba de perfis de contrato: ", error);
+        console.error("Erro ao clicar na aba do gerenciador de contas a pagar ", error);
       }
     } else {
       console.error("Frame principal não encontrado.");

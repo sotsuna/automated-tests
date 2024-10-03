@@ -1,5 +1,6 @@
 import { Given } from "@cucumber/cucumber";
 import { ICustomWorld } from "../support/custom-world";
+import { Frame } from "playwright";
 
 const MK_USER = process.env.MK_USER;
 const MK_PASSWORD = process.env.MK_PASSWORD;
@@ -7,11 +8,6 @@ const MK_PASSWORD = process.env.MK_PASSWORD;
 async function waitForFramesAndLoad(page: any) {
   await page.waitForSelector("frameset");
   await page.waitForLoadState("domcontentloaded");
-}
-
-function getMainFrame(page: any) {
-  const frames = page.frames();
-  return frames.find((frame: any) => frame.name().includes("mainsystem"));
 }
 
 Given(
@@ -33,7 +29,7 @@ Given(
   { timeout: 30000 },
   async function (this: ICustomWorld) {
     await waitForFramesAndLoad(this.page);
-    const mainFrame = getMainFrame(this.page);
+    const mainFrame = this.page?.frames().find((frame: Frame) => frame.name() === "mainsystem");
     if (mainFrame) {
       try {
         const mainForm = mainFrame.frameLocator('iframe[name="mainform"]');
@@ -52,21 +48,12 @@ Given(
   { timeout: 30000 },
   async function (this: ICustomWorld) {
     await waitForFramesAndLoad(this.page);
-    const mainFrame = getMainFrame(this.page);
-    if (mainFrame) {
-      try {
-        const frameLayer1 = mainFrame.frameLocator('iframe[name="mainform"]');
-        console.log('\n Mainform: \n', frameLayer1);
-        const frameLayer2 = frameLayer1.frameLocator('iframe[id="URLFrame6170976"]');
-        console.log('\n URLFrame6170976: \n', frameLayer2);
-        const frameLayer3 = frameLayer2.frameLocator('iframe[name="mainform"]');
-        console.log('\n Mainform 2: \n', frameLayer3);
-        // await frameLayer3?.locator('a').click();
-      } catch (error) {
-        console.error("Erro ao clicar na aba do gerenciador de contas a pagar ", error);
-      }
+    const expectedFrame = this.page?.frames().find((frame: Frame) => frame.name() === "mainsystem")?.frameLocator('mainform').frameLocator('URLFrame6170976').frameLocator('mainform');
+    if (expectedFrame) { 
+      console.log("Frame encontrado: ", expectedFrame);
+      await expectedFrame?.getByTitle("Gerenciador de Contas a Pagar").click();
     } else {
-      console.error("Frame principal não encontrado.");
+      throw new Error("Frame principal não encontrado.");
     }
   }
 );
